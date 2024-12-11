@@ -6,5 +6,19 @@ import (
 )
 
 func run() error {
-	return http.ListenAndServe(`:8080`, http.HandlerFunc(handlers.Start)) // запуск сервера
+
+	mux := http.NewServeMux()
+	//mux.HandleFunc("/", handlers.PostURL)
+	//mux.HandleFunc("/{id}", handlers.GetURL)
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/" {
+			handlers.PostURL(w, r)
+		} else {
+			handlers.GetURL(w, r)
+		}
+	})
+
+	return http.ListenAndServe(`:8080`, mux) // запуск сервера
+
 }
