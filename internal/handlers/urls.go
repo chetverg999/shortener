@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"github.com/chetverg999/shortener.git/internal/env"
 	"github.com/chetverg999/shortener.git/internal/shortener"
 	"github.com/chetverg999/shortener.git/internal/storage"
 	"io"
@@ -36,7 +37,7 @@ func PostURL(w http.ResponseWriter, r *http.Request) {
 
 	id := shortener.Shortener(3) // установка длины строки для сокращенной ссылки
 	BD[id] = string(userURL)
-	newUserURL := "http://localhost:8080/" + id
+	newUserURL := env.GoDotEnvVariable("HOST") + id
 
 	fmt.Println("Новый url:", newUserURL)
 
