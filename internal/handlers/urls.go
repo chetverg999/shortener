@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/chetverg999/shortener.git/internal/shortener"
 	"github.com/chetverg999/shortener.git/internal/storage"
-	"html/template"
+	"io"
 	"net/http"
 )
 
@@ -17,6 +17,7 @@ func GetURL(w http.ResponseWriter, r *http.Request) {
 
 	if !ok {
 		http.NotFound(w, r)
+
 		return
 	}
 
@@ -25,45 +26,22 @@ func GetURL(w http.ResponseWriter, r *http.Request) {
 
 func PostURL(w http.ResponseWriter, r *http.Request) {
 
-	err := r.ParseForm()
+	userURL, err := io.ReadAll(r.Body)
+
 	if err != nil {
-		http.Error(w, "Ошибка при разборе формы", http.StatusBadRequest)
-		return
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	templ, err := template.ParseFiles("internal/template/start.html")
-	if err != nil {
-		http.Error(w, "Ошибка загрузки шаблона", http.StatusMovedPermanently)
-		return
-	}
+	fmt.Println("Полученный url:", string(userURL))
 
-	userURL := r.Form.Get("url")
-
-	id := shortener.Shortener()
-	BD[id] = userURL
+	id := shortener.Shortener(3) // установка длины строки для сокращенной ссылки
+	BD[id] = string(userURL)
 	newUserURL := "http://localhost:8080/" + id
+
 	fmt.Println("Новый url:", newUserURL)
 
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.WriteHeader(http.StatusCreated)
+	w.Write([]byte(newUserURL))
 
-	data := map[string]interface{}{
-		"ShortURL": newUserURL,
-	}
-
-	if userURL == "" {
-		err = templ.Execute(w, nil)
-		if err != nil {
-			http.Error(w, "Ошибка рендеринга шаблона", http.StatusInternalServerError)
-			return
-		}
-	} else {
-		fmt.Println("Полученный url:", userURL)
-		err = templ.Execute(w, data)
-		if err != nil {
-			http.Error(w, "Ошибка рендеринга шаблона", http.StatusInternalServerError)
-			return
-		}
-
-	}
 }

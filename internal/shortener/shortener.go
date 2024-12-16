@@ -6,11 +6,11 @@ import (
 	"time"
 )
 
-// Функция для генерации случайной строки заданной длины из списка символов
-func Shortener() string {
+// Shortener Функция для генерации случайной строки заданной длины из списка символов
+
+func Shortener(length int) string {
 	r := rand.New(rand.NewSource(time.Now().UnixNano())) // Зерно генератора, основанное на текущем времени в наносекундах
-	chars := []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz" + "0123456789")
-	length := 2 // Длина возвращаемой строки
+	chars := []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
 	var b strings.Builder
 	for i := 0; i < length; i++ {
 		b.WriteRune(chars[r.Intn(len(chars))]) // Выписывает случайный символ из набора
