@@ -15,5 +15,6 @@ func Shortener(length int) string {
 	for i := 0; i < length; i++ {
 		b.WriteRune(chars[r.Intn(len(chars))]) // Выписывает случайный символ из набора
 	}
+
 	return b.String()
 }
