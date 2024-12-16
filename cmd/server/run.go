@@ -2,23 +2,16 @@ package main
 
 import (
 	"github.com/chetverg999/shortener.git/internal/handlers"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
 func run() error {
 
-	mux := http.NewServeMux()
-	//mux.HandleFunc("/", handlers.PostURL)
-	//mux.HandleFunc("/{id}", handlers.GetURL)
+	r := mux.NewRouter()
+	r.HandleFunc("/", handlers.PostURL)
+	r.HandleFunc("/{url}", handlers.GetURL)
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/" {
-			handlers.PostURL(w, r)
-		} else {
-			handlers.GetURL(w, r)
-		}
-	})
-
-	return http.ListenAndServe(`:8080`, mux) // запуск сервера
+	return http.ListenAndServe(`:8080`, r) // запуск сервера
 
 }

@@ -6,21 +6,20 @@ import (
 	"github.com/chetverg999/shortener.git/internal/storage"
 	"html/template"
 	"net/http"
-	"strings"
 )
 
 var BD = make(storage.Storage)
 
 func GetURL(w http.ResponseWriter, r *http.Request) {
-	id := r.URL.Path
-	fmt.Println(id)
-	id = strings.Replace(id, "/", "", -1)
-	fmt.Println(id)
+
+	id := r.URL.Path[1:]
 	originalURL, ok := BD[id]
+
 	if !ok {
 		http.NotFound(w, r)
 		return
 	}
+
 	http.Redirect(w, r, originalURL, http.StatusFound)
 }
 
@@ -32,9 +31,9 @@ func PostURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	templ, err := template.ParseFiles("internal/app/start.html")
+	templ, err := template.ParseFiles("internal/template/start.html")
 	if err != nil {
-		http.Error(w, "Ошибка загрузки шаблона", http.StatusInternalServerError)
+		http.Error(w, "Ошибка загрузки шаблона", http.StatusMovedPermanently)
 		return
 	}
 
@@ -43,16 +42,14 @@ func PostURL(w http.ResponseWriter, r *http.Request) {
 	id := shortener.Shortener()
 	BD[id] = userURL
 	newUserURL := "http://localhost:8080/" + id
+	fmt.Println("Новый url:", newUserURL)
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusCreated)
 
 	data := map[string]interface{}{
 		"ShortURL": newUserURL,
 	}
-
-	fmt.Println("Полученный url:", userURL)
-	fmt.Println("Метод запроса:", r.Method)
 
 	if userURL == "" {
 		err = templ.Execute(w, nil)
