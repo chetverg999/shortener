@@ -33,16 +33,20 @@ func PostURL(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	fmt.Println("Полученный url:", string(userURL))
+	if parseURL(userURL) != nil {
+		http.Error(w, parseURL(userURL).Error(), http.StatusBadRequest)
+	} else {
+		fmt.Println("Полученный url:", string(userURL))
 
-	id := shortener.Shortener(3) // установка длины строки для сокращенной ссылки
-	BD[id] = string(userURL)
-	newUserURL := env.GoDotEnvVariable("HOST") + id
+		id := shortener.Shortener(3) // установка длины строки для сокращенной ссылки
+		BD[id] = string(userURL)
+		newUserURL := env.GoDotEnvVariable("HOST") + id
 
-	fmt.Println("Новый url:", newUserURL)
+		fmt.Println("Новый url:", newUserURL)
 
-	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte(newUserURL))
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.WriteHeader(http.StatusCreated)
+		w.Write([]byte(newUserURL))
+	}
 
 }
