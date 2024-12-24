@@ -9,22 +9,14 @@ import (
 	"log"
 )
 
-func StartMongo() *UrlDao {
+func StartMongo() (*mongo.Client, *UrlDao) {
 	ctx := context.TODO()
 	opts := options.Client().ApplyURI(env.GoDotEnvVariable("DB"))
-	client, err := mongo.Connect(ctx, opts)
 
+	client, err := mongo.Connect(ctx, opts)
 	if err != nil {
 		panic(err)
 	}
-
-	//defer func(client *mongo.Client, ctx context.Context) {
-	//	err := client.Disconnect(ctx)
-	//	if err != nil {
-	//		log.Print(err)
-	//		panic(err)
-	//	}
-	//}(client, ctx)
 
 	fmt.Printf("%T\n", client)
 
@@ -33,5 +25,5 @@ func StartMongo() *UrlDao {
 		log.Print(err)
 	}
 
-	return ShortenUrlDAO
+	return client, ShortenUrlDAO
 }
