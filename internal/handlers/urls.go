@@ -5,27 +5,26 @@ import (
 	"github.com/chetverg999/shortener.git/internal/env"
 	"github.com/chetverg999/shortener.git/internal/shortener"
 	"github.com/chetverg999/shortener.git/internal/storage"
+	"gopkg.in/mgo.v2/bson"
 	"io"
 	"net/http"
 )
 
-var BD = make(storage.Storage)
+func GetURL(w http.ResponseWriter, r *http.Request, collection *storage.UrlDao) {
 
-func GetURL(w http.ResponseWriter, r *http.Request) {
+	short := r.URL.Path[1:]
+	originalURL, err := collection.Find(short)
 
-	id := r.URL.Path[1:]
-	originalURL, ok := BD[id]
-
-	if !ok {
+	if err != nil {
 		http.NotFound(w, r)
-
+		fmt.Println(err)
 		return
 	}
 
-	http.Redirect(w, r, originalURL, http.StatusFound)
+	http.Redirect(w, r, originalURL.UserURL, http.StatusFound)
 }
 
-func PostURL(w http.ResponseWriter, r *http.Request) {
+func PostURL(w http.ResponseWriter, r *http.Request, collection *storage.UrlDao) {
 
 	userURL, err := io.ReadAll(r.Body)
 
@@ -38,9 +37,21 @@ func PostURL(w http.ResponseWriter, r *http.Request) {
 	} else {
 		fmt.Println("Полученный url:", string(userURL))
 
-		id := shortener.Shortener(3) // установка длины строки для сокращенной ссылки
-		BD[id] = string(userURL)
-		newUserURL := env.GoDotEnvVariable("HOST") + id
+		short := shortener.Shortener(3) // установка длины строки для сокращенной ссылки
+
+		data := &storage.ShortURL{
+			Id:      bson.NewObjectId(),
+			UserURL: string(userURL),
+			Short:   short,
+		}
+
+		err = collection.Insert(data)
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		newUserURL := env.GoDotEnvVariable("HOST") + short
 
 		fmt.Println("Новый url:", newUserURL)
 
@@ -48,5 +59,4 @@ func PostURL(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusCreated)
 		w.Write([]byte(newUserURL))
 	}
-
 }
