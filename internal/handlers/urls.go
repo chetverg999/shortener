@@ -32,6 +32,11 @@ func PostURL(w http.ResponseWriter, r *http.Request, collection *storage.UrlDao)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
+	err = r.Body.Close()
+	if err != nil {
+		return
+	}
+
 	if parseURL(userURL) != nil { // Валидирование
 		http.Error(w, parseURL(userURL).Error(), http.StatusBadRequest)
 	} else {
@@ -57,6 +62,9 @@ func PostURL(w http.ResponseWriter, r *http.Request, collection *storage.UrlDao)
 
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		w.WriteHeader(http.StatusCreated)
-		w.Write([]byte(newUserURL))
+		_, err := w.Write([]byte(newUserURL))
+		if err != nil {
+			return
+		}
 	}
 }
