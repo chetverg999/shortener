@@ -32,17 +32,17 @@ func PostURL(w http.ResponseWriter, r *http.Request, collection *storage.UrlDao)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	if parseURL(userURL) != nil {
+	if parseURL(userURL) != nil { // Валидирование
 		http.Error(w, parseURL(userURL).Error(), http.StatusBadRequest)
 	} else {
 		fmt.Println("Полученный url:", string(userURL))
 
-		short := shortener.Shortener(3) // установка длины строки для сокращенной ссылки
+		shortURL := shortener.Shortener(3) // установка длины строки для сокращенной ссылки
 
 		data := &storage.ShortURL{
 			Id:      bson.NewObjectId(),
 			UserURL: string(userURL),
-			Short:   short,
+			Short:   shortURL,
 		}
 
 		err = collection.Insert(data)
@@ -51,7 +51,7 @@ func PostURL(w http.ResponseWriter, r *http.Request, collection *storage.UrlDao)
 			fmt.Println(err)
 		}
 
-		newUserURL := env.GoDotEnvVariable("HOST") + short
+		newUserURL := env.GoDotEnvVariable("HOST") + shortURL
 
 		fmt.Println("Новый url:", newUserURL)
 
