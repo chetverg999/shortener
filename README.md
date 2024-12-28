@@ -76,11 +76,11 @@ shortener/
 ## Usage
 
 - **Shorten a URL**:
-  - Send a POST request to `/shorten` with a JSON body containing the `url` field.
+  - Send a POST request to `/` with a Text body containing the `url` field.
   - Example using `curl`:
 
     ```bash
-    curl -X POST http://localhost:8080/shorten -H "Content-Type: application/json" -d '{"url": "https://example.com"}'
+    curl -X POST http://localhost:8080/ -H "Content-Type: text/plain; charset=utf-8" -d "https://example.com"
     ```
 
 - **Access the shortened URL**:
