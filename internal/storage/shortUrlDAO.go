@@ -14,9 +14,9 @@ type UrlDao struct {
 	c *mongo.Collection
 }
 
-func NewUrlDAO(ctx context.Context, client *mongo.Client) (*UrlDao, error) {
-	name := env.GoDotEnvVariable("DB_name")
-	dbCollection := env.GoDotEnvVariable("DB_collection")
+func NewUrlDAO(registry *env.Registry, client *mongo.Client) (*UrlDao, error) {
+	name := registry.Get("DB_NAME")
+	dbCollection := registry.Get("DB_COLLECTION")
 
 	return &UrlDao{
 		c: client.Database(name).Collection(dbCollection),

@@ -11,24 +11,28 @@ import (
 	"net/http"
 )
 
-func run() error {
+func startApp() error {
+	param := env.GetRegistry()
+	mongoDB, err := storage.NewMongoDB(param)
 
-	client, urlCollection := storage.StartMongo() // подключение к базе данных
+	if err != nil {
+		log.Print(err)
+	}
 	defer func() {
-		if err := client.Disconnect(context.TODO()); err != nil {
+
+		if err := mongoDB.Client.Disconnect(context.TODO()); err != nil {
 			log.Fatalf("Ошибка при отключении от MongoDB: %v", err)
 		}
 		fmt.Println("Соединение с MongoDB закрыто.")
 	}()
 	r := mux.NewRouter()
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		handlers.PostURL(w, r, urlCollection)
+		handlers.PostURL(w, r, mongoDB.Dao)
 	})
 	r.HandleFunc("/{url}", func(w http.ResponseWriter, r *http.Request) {
-		handlers.GetURL(w, r, urlCollection)
+		handlers.GetURL(w, r, mongoDB.Dao)
 	})
-	port := env.GoDotEnvVariable("PORT")
-	fmt.Println("Listening on port " + port + "...")
+	fmt.Println("Listening on port " + param.Get("PORT") + "...")
 
-	return http.ListenAndServe(port, r)
+	return http.ListenAndServe(param.Get("PORT"), r)
 }

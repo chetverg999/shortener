@@ -11,7 +11,7 @@ func main() {
 		}
 	}()
 
-	if err := run(); err != nil {
+	if err := startApp(); err != nil {
 		panic(err)
 	}
 }
