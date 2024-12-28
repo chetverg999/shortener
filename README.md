@@ -1,75 +1,20 @@
 # URL Shortener
 
-## Project Overview
-The URL Shortener is a simple and efficient web service written in Go that converts long URLs into short, easily shareable links. The service is backed by MongoDB for persistent storage and supports dynamic generation of short links.
+A simple and efficient web service written in Go that converts long URLs into short, easily shareable links. The service utilizes MongoDB for persistent storage and supports dynamic generation of short links.
 
-### Key Features
-- **Shorten URLs:** Convert long URLs into short, unique, and shareable links.
-- **Redirects:** Automatically redirect users to the original URL when they access the short link.
-- **MongoDB Integration:** Stores URLs and their corresponding shortened versions in a database.
-- **UTF-8 Validation Support:** Handles URL validation to ensure proper encoding.
-- **Customizable Environment:** Easily configure database connection and server settings using `.env`.
+## Features
 
----
+- **Shorten URLs**: Convert lengthy URLs into concise, unique, and shareable links.
+- **Redirects**: Automatically redirect users to the original URL when they access the shortened link.
+- **MongoDB Integration**: Store original and shortened URLs in a MongoDB database.
+- **Environment Configuration**: Manage database connections and server settings using a `.env` file.
 
-## Installation
+## Project Structure
 
-### Prerequisites
-1. **Go:** Ensure you have Go installed on your machine ([Download Go](https://golang.org/dl/)).
-2. **MongoDB:** Set up a local or cloud instance of MongoDB.
-3. **Git:** Clone the repository to your local machine.
-
-### Steps
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/url-shortener.git
-   cd url-shortener
-   ```
-2. Set up your environment variables in a `.env` file:
-   ```env
-   DB=mongodb://localhost:27017
-   DB_name=shortener_db
-   DB_collection=urls
-   PORT=:8080
-   HOST=http://localhost:8080/
-   ```
-3. Install dependencies:
-   ```bash
-   go mod tidy
-   ```
-4. Run the application:
-   ```bash
-   go run main.go
-   ```
-
----
-
-## Usage
-
-### Shorten a URL
-Send a `POST` request to the root endpoint with the original URL in the request body:
-```bash
-curl -X POST -d "https://example.com" http://localhost:8080/
-```
-Response:
-```
-http://localhost:8080/abc123
-```
-
-### Redirect to Original URL
-Access the shortened URL in your browser or via `curl`:
-```bash
-curl http://localhost:8080/abc123
-```
-Redirects to `https://example.com`.
-
----
-
-## Directory Structure
-```
-url-shortener/
+```plaintext
+shortener/
 ├── cmd/
-│   ├── server/     
+│   └── server/       # Main application entry point
 ├── internal/
 │   ├── env/          # Environment variable handling
 │   ├── shortener/    # URL shortening logic
@@ -77,33 +22,111 @@ url-shortener/
 ├── handlers/         # HTTP handlers for POST and GET requests
 ├── .env              # Environment configuration (ignored in Git)
 ├── main.go           # Application entry point
-└── go.mod            # Module dependencies
+├── go.mod            # Module dependencies
+└── Makefile          # Task automation
 ```
 
----
+## Getting Started
 
-## Development
+### Prerequisites
 
-### Running Tests
-Run tests with the following command:
-```bash
-go test ./...
-```
+- **Go**: Version 1.23.1 or higher. [Download Go](https://golang.org/dl/)
+- **MongoDB**: Ensure you have access to a MongoDB instance. [Install MongoDB](https://docs.mongodb.com/manual/installation/)
+- **Git**: To clone the repository. [Install Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
-### Debugging MongoDB Issues
-- Ensure MongoDB is running on the specified host and port.
-- Check if UTF-8 validation is disabled if encountering encoding issues:
+### Installation
+
+1. **Clone the repository**:
+
+   ```bash
+   git clone https://github.com/chetverg999/shortener.git
+   cd shortener
+   ```
+
+2. **Set up environment variables**:
+
+   - Create a `.env` file in the root directory.
+   - Refer to `.env.example` for the required variables.
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   - Update the `.env` file with your MongoDB connection string and any other necessary configurations.
+
+3. **Install dependencies**:
+
+   ```bash
+   make deps
+   ```
+
+4. **Build the application**:
+
+   ```bash
+   make build
+   ```
+
+5. **Run the application**:
+
+   ```bash
+   make run
+   ```
+
+   The server should now be running, and you can access it at `http://localhost:8080` (or the port specified in your `.env` file).
+
+## Usage
+
+- **Shorten a URL**:
+  - Send a POST request to `/shorten` with a JSON body containing the `url` field.
+  - Example using `curl`:
+
+    ```bash
+    curl -X POST http://localhost:8080/shorten -H "Content-Type: application/json" -d '{"url": "https://example.com"}'
+    ```
+
+- **Access the shortened URL**:
+  - Navigate to `http://localhost:8080/{shortID}`, where `{shortID}` is the unique identifier returned from the `/shorten` endpoint.
+  - This will redirect you to the original URL.
+
+## Testing
+
+- To run tests:
+
   ```bash
-  mongodb://localhost:27017/?enableUtf8Validation=false
+  make test
   ```
 
+## Formatting
+
+- To format the codebase:
+
+  ```bash
+  make fmt
+  ```
+
+## Cleaning Up
+
+- To remove the built binary and clean up:
+
+  ```bash
+  make clean
+  ```
+
+## Configuration
+
+- **Environment Variables**:
+  - `PORT`: Port on which the server runs (default: `8080`).
+  - `MONGODB_URI`: Connection string for MongoDB.
+  - `DATABASE_NAME`: Name of the MongoDB database.
+  - `COLLECTION_NAME`: Name of the collection to store URLs.
+
+  Ensure these variables are set in your `.env` file.
+
+## Dependencies
+
+- [Go Modules](https://github.com/golang/go/wiki/Modules)
+- [Gorilla Mux](https://github.com/gorilla/mux)
+- [godotenv](https://github.com/joho/godotenv)
+- [MongoDB Go Driver](https://go.mongodb.org/mongo-driver)
+
 ---
-
-## Contributions
-Contributions are welcome! Please fork the repository and create a pull request with your improvements.
-
----
-
-
-## Author
-Created by [chetverg999](https://github.com/chetverg999).
