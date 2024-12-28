@@ -10,7 +10,11 @@ import (
 	"net/http"
 )
 
-const shortUrlLength = 3
+const (
+	shortUrlLength     = 3
+	mediaType          = "Content-Type"
+	mediaTypeTextPlain = "text/plain; charset=utf-8"
+)
 
 func GetURL(w http.ResponseWriter, r *http.Request, collection *storage.UrlDao) {
 	short := r.URL.Path[1:]
@@ -33,9 +37,8 @@ func PostURL(w http.ResponseWriter, r *http.Request, collection *storage.UrlDao)
 
 		return
 	}
-	err = r.Body.Close()
 
-	if err != nil {
+	if err = r.Body.Close(); err != nil {
 
 		return
 	}
@@ -52,19 +55,18 @@ func PostURL(w http.ResponseWriter, r *http.Request, collection *storage.UrlDao)
 		UserURL: string(userURL),
 		Short:   shortURL,
 	}
-	err = collection.Insert(data)
 
-	if err != nil {
+	if err = collection.Insert(data); err != nil {
 		fmt.Println(err)
 
 		return
 	}
 	newUserURL := env.GoDotEnvVariable("HOST") + shortURL
 	fmt.Println("Новый url:", newUserURL)
-	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.Header().Set(mediaType, mediaTypeTextPlain)
 	w.WriteHeader(http.StatusCreated)
-	_, err = w.Write([]byte(newUserURL))
-	if err != nil {
+
+	if _, err = w.Write([]byte(newUserURL)); err != nil {
 
 		return
 	}
