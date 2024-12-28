@@ -18,10 +18,9 @@ shortener/
 ├── internal/
 │   ├── env/          # Environment variable handling
 │   ├── shortener/    # URL shortening logic
-│   └── storage/      # MongoDB integration and database logic
-├── handlers/         # HTTP handlers for POST and GET requests
+│   ├── storage/      # MongoDB integration and database logic
+│   └── handlers/     # HTTP handlers for POST and GET requests
 ├── .env              # Environment configuration (ignored in Git)
-├── main.go           # Application entry point
 ├── go.mod            # Module dependencies
 └── Makefile          # Task automation
 ```
