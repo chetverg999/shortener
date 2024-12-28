@@ -38,6 +38,7 @@ func (r *Registry) loadEnv() {
 	}
 	for _, e := range os.Environ() {
 		pair := splitEnv(e)
+
 		r.env[pair[0]] = pair[1]
 	}
 }

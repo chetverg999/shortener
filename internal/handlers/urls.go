@@ -29,7 +29,7 @@ func GetURL(w http.ResponseWriter, r *http.Request, collection *storage.UrlDao) 
 	http.Redirect(w, r, originalURL.UserURL, http.StatusFound)
 }
 
-func PostURL(w http.ResponseWriter, r *http.Request, collection *storage.UrlDao) {
+func PostURL(w http.ResponseWriter, r *http.Request, collection *storage.UrlDao, registry *env.Registry) {
 	userURL, err := io.ReadAll(r.Body)
 
 	if err != nil {
@@ -61,7 +61,7 @@ func PostURL(w http.ResponseWriter, r *http.Request, collection *storage.UrlDao)
 
 		return
 	}
-	newUserURL := env.GoDotEnvVariable("HOST") + shortURL
+	newUserURL := registry.Get("HOST") + shortURL
 	fmt.Println("Новый url:", newUserURL)
 	w.Header().Set(mediaType, mediaTypeTextPlain)
 	w.WriteHeader(http.StatusCreated)

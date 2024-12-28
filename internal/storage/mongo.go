@@ -15,12 +15,11 @@ type MongoDB struct {
 
 func NewMongoDB(registry *env.Registry) (*MongoDB, error) {
 	ctx := context.Background()
-	opts := options.Client().ApplyURI(registry.Get("DB_HOST"))
+	opts := options.Client().ApplyURI(registry.Get("MONGODB_URI"))
 	client, err := mongo.Connect(ctx, opts)
 
 	if err != nil {
-
-		panic(err)
+		log.Fatal(err)
 	}
 	dao, err := NewUrlDAO(registry, client)
 

@@ -27,7 +27,7 @@ func startApp() error {
 	}()
 	r := mux.NewRouter()
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		handlers.PostURL(w, r, mongoDB.Dao)
+		handlers.PostURL(w, r, mongoDB.Dao, param)
 	})
 	r.HandleFunc("/{url}", func(w http.ResponseWriter, r *http.Request) {
 		handlers.GetURL(w, r, mongoDB.Dao)
