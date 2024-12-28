@@ -23,7 +23,6 @@ func startApp() error {
 		if err := mongoDB.Client.Disconnect(context.TODO()); err != nil {
 			log.Fatalf("Ошибка при отключении от MongoDB: %v", err)
 		}
-		fmt.Println("Соединение с MongoDB закрыто.")
 	}()
 	r := mux.NewRouter()
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

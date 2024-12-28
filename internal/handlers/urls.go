@@ -48,7 +48,6 @@ func PostURL(w http.ResponseWriter, r *http.Request, collection *storage.UrlDao,
 
 		return
 	}
-	fmt.Println("Полученный url:", string(userURL))
 	shortURL := shortener.Shortener(shortUrlLength)
 	data := &storage.ShortURL{
 		Id:      bson.NewObjectId(),
@@ -62,7 +61,6 @@ func PostURL(w http.ResponseWriter, r *http.Request, collection *storage.UrlDao,
 		return
 	}
 	newUserURL := registry.Get("HOST") + shortURL
-	fmt.Println("Новый url:", newUserURL)
 	w.Header().Set(mediaType, mediaTypeTextPlain)
 	w.WriteHeader(http.StatusCreated)
 

@@ -7,7 +7,6 @@ import (
 	"sync"
 )
 
-// Registry структура для хранения переменных окружения
 type Registry struct {
 	env map[string]string
 	mu  sync.RWMutex
@@ -18,7 +17,6 @@ var (
 	once     sync.Once
 )
 
-// GetRegistry предоставляет доступ к единственному экземпляру Registry
 func GetRegistry() *Registry {
 	once.Do(func() {
 		instance = &Registry{
@@ -29,7 +27,6 @@ func GetRegistry() *Registry {
 	return instance
 }
 
-// loadEnv загружает переменные окружения
 func (r *Registry) loadEnv() {
 	err := godotenv.Load(".env")
 
@@ -43,7 +40,6 @@ func (r *Registry) loadEnv() {
 	}
 }
 
-// splitEnv разделяет переменные окружения в формате "KEY=VALUE"
 func splitEnv(env string) [2]string {
 	i := 0
 	for ; i < len(env); i++ {
@@ -54,7 +50,6 @@ func splitEnv(env string) [2]string {
 	return [2]string{env[:i], env[i+1:]}
 }
 
-// Get возвращает значение переменной окружения
 func (r *Registry) Get(key string) string {
 
 	if value, exists := r.env[key]; exists {
