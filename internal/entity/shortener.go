@@ -1,4 +1,4 @@
-package shortener
+package entity
 
 import (
 	"math/rand"

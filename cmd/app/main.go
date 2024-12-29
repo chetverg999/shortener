@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/chetverg999/shortener.git/internal/app"
+)
 
 func main() {
 
@@ -11,7 +14,7 @@ func main() {
 		}
 	}()
 
-	if err := startApp(); err != nil {
+	if err := app.Run(); err != nil {
 		panic(err)
 	}
 }

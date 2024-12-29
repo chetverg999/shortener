@@ -1,4 +1,4 @@
-package storage
+package entity
 
 import "gopkg.in/mgo.v2/bson"
 

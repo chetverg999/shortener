@@ -1,8 +1,9 @@
-package storage
+package mongoDB
 
 import (
 	"context"
-	"github.com/chetverg999/shortener.git/internal/env"
+	"github.com/chetverg999/shortener.git/internal/adapter/database"
+	"github.com/chetverg999/shortener.git/internal/adapter/env"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
@@ -10,18 +11,17 @@ import (
 
 type MongoDB struct {
 	Client *mongo.Client
-	Dao    *UrlDao
+	Dao    *database.UrlDao
 }
 
 func NewMongoDB(registry *env.Registry) (*MongoDB, error) {
-	ctx := context.Background()
 	opts := options.Client().ApplyURI(registry.Get("MONGODB_URI"))
-	client, err := mongo.Connect(ctx, opts)
+	client, err := mongo.Connect(context.Background(), opts)
 
 	if err != nil {
 		log.Fatal(err)
 	}
-	dao, err := NewUrlDAO(registry, client)
+	dao, err := database.NewUrlDAO(registry, client)
 
 	if err != nil {
 		log.Print(err)

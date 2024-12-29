@@ -1,11 +1,11 @@
-package handlers
+package usecase
 
 import (
 	"fmt"
 	"net/url"
 )
 
-func parseURL(userURL []byte) error {
+func ParseURL(userURL []byte) error {
 
 	parsedURL, err := url.ParseRequestURI(string(userURL))
 	if err != nil {

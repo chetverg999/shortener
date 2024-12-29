@@ -1,9 +1,10 @@
-package storage
+package database
 
 import (
 	"context"
 	"fmt"
-	"github.com/chetverg999/shortener.git/internal/env"
+	"github.com/chetverg999/shortener.git/internal/adapter/env"
+	"github.com/chetverg999/shortener.git/internal/entity"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/mongo"
 	"gopkg.in/mgo.v2/bson"
@@ -24,15 +25,14 @@ func NewUrlDAO(registry *env.Registry, client *mongo.Client) (*UrlDao, error) {
 }
 
 func countDocuments(collection *UrlDao) (int64, error) {
-	ctx := context.Background()
-	count, err := collection.c.CountDocuments(ctx, bson.M{})
+	count, err := collection.c.CountDocuments(context.Background(), bson.M{})
 	if err != nil {
 		return 0, err
 	}
 	return count, nil
 }
 
-func (u *UrlDao) Insert(url *ShortURL) error {
+func (u *UrlDao) Insert(url *entity.ShortURL) error {
 	if !utf8.ValidString(url.UserURL) {
 		fmt.Println("Некорректная строка UTF-8:", url.UserURL)
 	}
@@ -57,10 +57,10 @@ func (u *UrlDao) Insert(url *ShortURL) error {
 	return err
 }
 
-func (u *UrlDao) Find(id string) (*ShortURL, error) {
+func (u *UrlDao) Find(id string) (*entity.ShortURL, error) {
 	filter := bson.M{"Short": id}
 	fmt.Println("Идет поиск в базе")
-	var shortURL ShortURL
+	var shortURL entity.ShortURL
 	err := u.c.FindOne(context.Background(), filter).Decode(&shortURL)
 	fmt.Println(err)
 	switch {

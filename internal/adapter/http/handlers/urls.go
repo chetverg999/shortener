@@ -2,9 +2,10 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/chetverg999/shortener.git/internal/env"
-	"github.com/chetverg999/shortener.git/internal/shortener"
-	"github.com/chetverg999/shortener.git/internal/storage"
+	"github.com/chetverg999/shortener.git/internal/adapter/database"
+	"github.com/chetverg999/shortener.git/internal/adapter/env"
+	"github.com/chetverg999/shortener.git/internal/entity"
+	"github.com/chetverg999/shortener.git/internal/usecase"
 	"gopkg.in/mgo.v2/bson"
 	"io"
 	"net/http"
@@ -16,7 +17,7 @@ const (
 	mediaTypeTextPlain = "text/plain; charset=utf-8"
 )
 
-func GetURL(w http.ResponseWriter, r *http.Request, collection *storage.UrlDao) {
+func GetURL(w http.ResponseWriter, r *http.Request, collection *database.UrlDao) {
 	short := r.URL.Path[1:]
 	originalURL, err := collection.Find(short)
 
@@ -29,7 +30,7 @@ func GetURL(w http.ResponseWriter, r *http.Request, collection *storage.UrlDao) 
 	http.Redirect(w, r, originalURL.UserURL, http.StatusFound)
 }
 
-func PostURL(w http.ResponseWriter, r *http.Request, collection *storage.UrlDao, registry *env.Registry) {
+func PostURL(w http.ResponseWriter, r *http.Request, collection *database.UrlDao, registry *env.Registry) {
 	userURL, err := io.ReadAll(r.Body)
 
 	if err != nil {
@@ -43,13 +44,13 @@ func PostURL(w http.ResponseWriter, r *http.Request, collection *storage.UrlDao,
 		return
 	}
 
-	if parseURL(userURL) != nil { // Валидирование
-		http.Error(w, parseURL(userURL).Error(), http.StatusBadRequest)
+	if usecase.ParseURL(userURL) != nil { // Валидирование
+		http.Error(w, usecase.ParseURL(userURL).Error(), http.StatusBadRequest)
 
 		return
 	}
-	shortURL := shortener.Shortener(shortUrlLength)
-	data := &storage.ShortURL{
+	shortURL := entity.Shortener(shortUrlLength)
+	data := &entity.ShortURL{
 		Id:      bson.NewObjectId(),
 		UserURL: string(userURL),
 		Short:   shortURL,
