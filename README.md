@@ -9,22 +9,6 @@ A simple and efficient web service written in Go that converts long URLs into sh
 - **MongoDB Integration**: Store original and shortened URLs in a MongoDB database.
 - **Environment Configuration**: Manage database connections and server settings using a `.env` file.
 
-## Project Structure
-
-```plaintext
-shortener/
-├── cmd/
-│   └── server/       # Main application entry point
-├── internal/
-│   ├── env/          # Environment variable handling
-│   ├── shortener/    # URL shortening logic
-│   ├── storage/      # MongoDB integration and database logic
-│   └── handlers/     # HTTP handlers for POST and GET requests
-├── .env              # Environment configuration (ignored in Git)
-├── go.mod            # Module dependencies
-└── Makefile          # Task automation
-```
-
 ## Getting Started
 
 ### Prerequisites
