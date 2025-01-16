@@ -5,7 +5,7 @@ import (
 	"net/url"
 )
 
-func ParseURL(userURL []byte) error {
+func ValidateURL(userURL []byte) error {
 
 	parsedURL, err := url.ParseRequestURI(string(userURL))
 	if err != nil {

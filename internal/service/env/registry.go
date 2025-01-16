@@ -17,7 +17,7 @@ var (
 	once     sync.Once
 )
 
-func GetRegistry() *Registry {
+func NewRegistry() *Registry {
 	once.Do(func() {
 		instance = &Registry{
 			env: make(map[string]string),

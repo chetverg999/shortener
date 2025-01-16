@@ -3,8 +3,8 @@ package database
 import (
 	"context"
 	"fmt"
-	"github.com/chetverg999/shortener.git/internal/adapter/env"
 	"github.com/chetverg999/shortener.git/internal/entity"
+	"github.com/chetverg999/shortener.git/internal/service/env"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/mongo"
 	"gopkg.in/mgo.v2/bson"

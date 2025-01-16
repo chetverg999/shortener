@@ -2,14 +2,14 @@ package app
 
 import (
 	"context"
-	"github.com/chetverg999/shortener.git/internal/adapter/env"
 	"github.com/chetverg999/shortener.git/internal/infrastructure/mongoDB"
 	"github.com/chetverg999/shortener.git/internal/infrastructure/server"
+	"github.com/chetverg999/shortener.git/internal/service/env"
 	"log"
 )
 
 func Run() error {
-	registry := env.GetRegistry()
+	registry := env.NewRegistry()
 	db, err := mongoDB.NewMongoDB(registry)
 
 	if err != nil {

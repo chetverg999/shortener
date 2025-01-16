@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/chetverg999/shortener.git/internal/adapter/database"
-	"github.com/chetverg999/shortener.git/internal/adapter/env"
 	"github.com/chetverg999/shortener.git/internal/entity"
+	"github.com/chetverg999/shortener.git/internal/service/database"
+	"github.com/chetverg999/shortener.git/internal/service/env"
 	"github.com/chetverg999/shortener.git/internal/usecase"
 	"gopkg.in/mgo.v2/bson"
 	"io"
@@ -44,8 +44,8 @@ func PostURL(w http.ResponseWriter, r *http.Request, collection *database.UrlDao
 		return
 	}
 
-	if usecase.ParseURL(userURL) != nil { // Валидирование
-		http.Error(w, usecase.ParseURL(userURL).Error(), http.StatusBadRequest)
+	if usecase.ValidateURL(userURL) != nil { // Валидирование
+		http.Error(w, usecase.ValidateURL(userURL).Error(), http.StatusBadRequest)
 
 		return
 	}

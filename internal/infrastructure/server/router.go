@@ -2,9 +2,9 @@ package server
 
 import (
 	"fmt"
-	"github.com/chetverg999/shortener.git/internal/adapter/env"
-	"github.com/chetverg999/shortener.git/internal/adapter/http/handlers"
 	"github.com/chetverg999/shortener.git/internal/infrastructure/mongoDB"
+	"github.com/chetverg999/shortener.git/internal/service/env"
+	"github.com/chetverg999/shortener.git/internal/service/http/handlers"
 	"github.com/gorilla/mux"
 	"net/http"
 )

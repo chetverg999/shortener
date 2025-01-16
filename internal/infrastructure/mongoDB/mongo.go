@@ -2,8 +2,8 @@ package mongoDB
 
 import (
 	"context"
-	"github.com/chetverg999/shortener.git/internal/adapter/database"
-	"github.com/chetverg999/shortener.git/internal/adapter/env"
+	"github.com/chetverg999/shortener.git/internal/service/database"
+	"github.com/chetverg999/shortener.git/internal/service/env"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
